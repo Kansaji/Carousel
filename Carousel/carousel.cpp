@@ -35,64 +35,66 @@ void init() {
 
 
 }
+
 void roofSegment() {
+	glPushMatrix();
+	glColor3f(0.98, 0.96, 0.54);
 	glBegin(GL_TRIANGLES);
-	glVertex3f(0.0f, 2.0f, 0.0f);
-	glVertex3f(7.0 * sin(67.5) - 0.03, 0.0f, 7.0f * cos(67.5) - 0.5);
-	glVertex3f(-7.0f, 0.0f, 0.0f);
-	
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(10 * cos(0.393), -4.0, 10 * sin(0.393));
+	glVertex3f(10 * cos(0.393), -4.0, -10 * sin(0.393));
 	glEnd();
+	glPopMatrix();
 }
 
 void roof() {
-
+	glTranslatef(0, 0.5, 0);
+	glRotatef(22.5, 0, 1, 0);
+	for (GLfloat j = 0; j < 8; j++) {
+		glRotatef(90, 0, 1, 0);
+		roofSegment();
+	}
+	
 	glPushMatrix();
 	glLoadIdentity();
-	glColor3f(0.9, 0.9, 0.9);
-	glTranslatef(0.0, -0.3, 0.0);
+	glColor3f(0.75, 0.0, 0.07);
+	glNormal3f(1.0, 1.0, 0.0);
+
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(0.0f, 2.0f, 0.0f);
-	for (GLfloat i = 0; i < 2*3.14; i+=(2*3.14)/64) {
-		glVertex3f(7*cos(i), 0.0f, 7*sin(i));
+	glVertex3f(0.0, 0.0, 0.0);
+	float segments = (2 * 3.14) / 8;
+	for (GLfloat i = 0; i <= 2 * 3.14; i += segments ) {
+		glVertex3f(10.0 * cos(i), -4.0, 10.0 * sin(i));
 	}
 	glEnd();
 	glPopMatrix();
-
 	glPushMatrix();
 	glLoadIdentity();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	float segment = 360 / 16;
-	for (GLfloat i=0; i < 64; i++) {
-		glNormal3f(-1, 1, 1);
-		glColor3f(0.65, 0.03,0.05);
-		glRotatef(11.25, 0, 1, 0);
-		roofSegment();
-	}
-	glPopMatrix();
-
-	glPushMatrix();
-	glLoadIdentity();
-	glColor3f(0.65, 0.03, 0.05);
-	glTranslatef(0, 1, 0);
+	glNormal3f(1.0, 1.0, 0.0);
+	glColor3f(0.75, 0.0, 0.07);
+	glTranslatef(0, -4.5, 0);
 	glRotatef(-90, 1, 0, 0);
-	glutSolidCone(2, 1, 16, 5);
+	gluCylinder(qobj, 10, 10, 1, 8, 1);
 	glPopMatrix();
 	
 }
+
 void centerPole() {
 	
 }
-void platform() {	
+void platform() {
+	
 }
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	gluLookAt(-7,5,0, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0,10,15, 0, 0, 0, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	roof();
-	
 
+
+	roof();
+	platform();
 	glFlush();
 }
 
