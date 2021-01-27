@@ -5,6 +5,12 @@
 
 GLUquadricObj* qobj;
 
+GLfloat rot = 0;
+GLfloat hop = 0;
+GLfloat hopChange =1 ;
+GLfloat pitch = 0;
+GLfloat pitchChange = 10;
+
 void initLighting() {
 	GLfloat L0_Ambient[] = { 0.1,0.1,0.1,1.0 };
 	GLfloat L0_Diffuse[] = { 1.0,1.0,1.0,1.0 };
@@ -36,8 +42,8 @@ void init() {
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	initLighting();
-	//glEnable(GL_LIGHT0);
-//	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 	glEnable(GL_NORMALIZE);
 	qobj = gluNewQuadric();
 	gluQuadricDrawStyle(qobj, GLU_FILL);
@@ -175,14 +181,14 @@ void lightBulb() {
 
 void horse() {
 	//body
-	glRotatef(20, 0, 0, 1);
+	glRotatef(10, 0, 0, 1);
 	glPushMatrix();
 	glRotatef(-10, 0, 0, 1);
 	glRotatef(-90, 0, 1, 0);
-	glutSolidSphere(6, 20, 20);
-	gluCylinder(qobj, 5, 6, 10, 40, 1);
+	glutSolidSphere(5, 20, 20);
+	gluCylinder(qobj, 5, 5, 10, 40, 1);
 	glTranslatef(0, 0, 9.5);
-	glutSolidSphere(6, 20, 20);
+	glutSolidSphere(4.7, 20, 20);
 	glPopMatrix();
 
 	//torso
@@ -190,7 +196,7 @@ void horse() {
 	glTranslatef(-9.0, 0.0, 0.0);
 	glRotatef(-45, 0, 0, 1);
 	glRotatef(-90, 0, 1, 0);
-	gluCylinder(qobj, 5, 5, 9, 40, 1);
+	gluCylinder(qobj, 4.5, 4.5, 9, 40, 1);
 	glPopMatrix();
 
 	//neck
@@ -198,7 +204,7 @@ void horse() {
 	glTranslatef(-15.0, 4.0, 0.0);
 	glRotatef(-90, 0, 0, 1);
 	glRotatef(-90, 0, 1, 0);
-	gluCylinder(qobj, 4, 2, 10, 40, 1);
+	gluCylinder(qobj, 4, 2, 12, 40, 1);
 	glPopMatrix();
 
 	//left back limb
@@ -214,6 +220,8 @@ void horse() {
 	glutSolidSphere(1.9, 6, 2);
 	glRotatef(-35, 1, 0, 0);
 	gluCylinder(qobj, 1.5, 1, 12, 6, 1);
+	glTranslatef(-0.0, 0.0, 12.0);
+	gluCylinder(qobj, 1.23, 1.5, 2, 40, 1);
 	glPopMatrix();
 
 	//right back limb
@@ -229,22 +237,26 @@ void horse() {
 	glutSolidSphere(1.9, 6, 2);
 	glRotatef(-35, 1, 0, 0);
 	gluCylinder(qobj, 1.5, 1, 12, 6, 1);
+	glTranslatef(-0.0, 0.0, 12.0);
+	gluCylinder(qobj, 1.25, 1.5, 2, 40, 1);
 	glPopMatrix();
 
 	//head
 	glPushMatrix();
-	glTranslatef(-15.0, 14.0, 0);
-	glutSolidSphere(2, 40, 40);
+	glTranslatef(-15.0, 17.0, 0);
+	glutSolidSphere(2.5, 40, 40);
 	glRotatef(-15, 0, 0, 1);
 	glRotatef(-90, 0, 1, 0);
-	glRotatef(40, 1, 0, 0);
-	gluCylinder(qobj, 2, 0.75, 5, 40, 1);
+	glRotatef(30, 1, 0, 0);
+	gluCylinder(qobj, 2.5, 1.25, 5, 40, 1);
+	glTranslatef(0, 0, 4.5);
+	glutSolidSphere(1.5, 40, 40);
 	glPopMatrix();
 
 	//ears
 	glPushMatrix();
-	glTranslatef(-16.0, 16.0, 1.5);
-	glRotatef(10,0, 0, 1);
+	glTranslatef(-15.0, 20.0, 1.5);
+	glRotatef(5,0, 0, 1);
 	glutSolidOctahedron();
 	glTranslatef(-0.0, 0.0, -3.0);
 	glutSolidOctahedron();
@@ -262,6 +274,8 @@ void horse() {
 	glTranslatef(-0.0, -0.1, 2);
 	glRotatef(40, 1, 0, 0);
 	gluCylinder(qobj, 1.2, 0.75, 6, 40, 1);
+	glTranslatef(-0.0, 0.0, 6.0);
+	gluCylinder(qobj, 1., 1.25, 2, 40, 1);
 	glPopMatrix();
 
 	//front right limb
@@ -277,6 +291,8 @@ void horse() {
 	glTranslatef(-0.0, -0.1, 2);
 	glRotatef(10, 1, 0, 0);
 	gluCylinder(qobj, 1.2, 0.75, 6, 40, 1);
+	glTranslatef(-0.0, 0.0, 6.0);
+	gluCylinder(qobj, 1., 1.25, 2, 40, 1);
 	glPopMatrix();
 
 	//tail
@@ -287,7 +303,15 @@ void horse() {
 	gluCylinder(qobj, 0.5, 3, 12, 8, 1);
 	glPopMatrix();
 
+	//drop rod
+	
+}
 
+void dropRod() {
+	glPushMatrix();
+	glRotatef(90, 1, 0, 0);
+	gluCylinder(qobj, 0.5, 0.5, 80, 40, 40);
+	glPopMatrix();
 }
 
 //void moon() {
@@ -326,51 +350,89 @@ void display() {
 	//gluLookAt(-30, 5, 0, 0, 0, 0, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	lightBulb();
-	glPushMatrix();
+
+	
 	glColor3f(0.0, 0.63, 0.90);
 	glScalef(0.75, 0.75, 0.75);
-	
+
+	// horse rotation comes here
+
+	glRotatef(rot, 0, 1, 0);
+
+	glPushMatrix();
+	glTranslatef(-5.0, 30.0, 40);
+	dropRod();
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(-90, 0, 1, 0);
+	glTranslatef(-5.0, 30.0, 40);
+	dropRod();
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(-180, 0, 1, 0);
+	glTranslatef(-5.0, 30.0, 40);
+	dropRod();
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(-270, 0, 1, 0);
+	glTranslatef(-5.0, 30.0, 40);
+	dropRod();
+	glPopMatrix();
+
+
 	//horse1
 	glPushMatrix();
+	glTranslatef(0, hop, 0);
 	glColor3f(0.0, 0.63, 0.90);
 	glTranslatef(0.0, -30.0, 40);
+	glRotatef(pitch, 0, 0, 1);
 	horse();
 	glPopMatrix();
 
 	//horse2
 	glPushMatrix();
+	glTranslatef(0, hop, 0);
 	glColor3f(0.06, 0.58, 0.10);
 	glRotatef(-90, 0, 1, 0);
 	glTranslatef(0.0, -30.0, 40);
+	glRotatef(pitch, 0, 0, 1);
 	horse();
 	glPopMatrix();
 
 	//horse3
 	glPushMatrix();
+	glTranslatef(0, hop, 0);
 	glColor3f(0.0, 0.63, 0.90);
 	glRotatef(-180, 0, 1, 0);
 	glTranslatef(0.0, -30.0, 40);
+	glRotatef(pitch, 0, 0, 1);
 	horse();
-	glPopMatrix();
+    glPopMatrix();
 
 	//horse4
 	glPushMatrix();
+	glTranslatef(0, hop, 0);
 	glColor3f(0.06, 0.58, 0.10);
-	glRotatef(-240, 0, 1, 0);
+	glRotatef(-270, 0, 1, 0);
 	glTranslatef(0.0, -30.0, 40);
+	glRotatef(pitch, 0, 0, 1);
 	horse();
 	glPopMatrix();
 	
-	
-	glScalef(5,5,5);
-	roof();
+
 	glPushMatrix();
+	glScalef(5, 5, 5);
 	glTranslatef(0.0, 4, 0.0);
+	roof();
 	centerPole();
 	glPopMatrix();
+	glPushMatrix();
+	glScalef(5, 5, 5);
 	platform();
-
+	glPopMatrix();
 	
 	glFlush();
 }
@@ -383,10 +445,32 @@ void reshape(GLsizei width, GLsizei height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	GLfloat aspectRatio = (GLfloat)width / (GLfloat)height;
-	gluPerspective(100, aspectRatio, 1, 150);
+	gluPerspective(100, aspectRatio, 10, 200);
 	
 }
 
+void timer(int value) {
+	
+	rot += -5;
+	//pitch+=20;
+	hop=hop+ hopChange;
+	pitch = pitch + pitchChange;
+	if (hop >= 6) {
+		hopChange = -hopChange;
+	}
+	else if (hop <= 5) {
+		hopChange = -hopChange;
+	}
+	if (pitch >= 40) {
+		pitchChange = -pitchChange;
+	}
+	else if (pitch <= -15) {
+		pitchChange = -pitchChange;
+	}
+
+	glutTimerFunc(130, timer, 1);
+	glutPostRedisplay();
+}
 int main(int argc, char** args) {
 	glutInit(&argc, args);
 	glutInitWindowSize(500, 500);
@@ -395,7 +479,7 @@ int main(int argc, char** args) {
 	init();
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(display);
-	
+	glutTimerFunc(1000, timer, 1);
 	glutMainLoop();
 	return 0;
 
