@@ -54,7 +54,7 @@ void init() {
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	initLighting();
-	//glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
 	glEnable(GL_NORMALIZE);
 	qobj = gluNewQuadric();
@@ -77,25 +77,25 @@ void roofSegment() {
 	glPopMatrix();
 }
 
-void curtain() {
-	glPushMatrix();
-	glColor3f(0.58, 0.15, 0.16);
-	
-	glTranslatef(-50, 0, 115);
-	for (GLfloat i = 0; i < 5; i++) {
-		glTranslatef(20, 0, 0);
-		glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(0, 0, 0);
-		for (GLfloat j = 0; j < 3.14; j += 0.5) {
-			glVertex3f(10 * cos(j), -10 * sin(j), 0);
-
-		}
-		glEnd();
-	}
-
-	glPopMatrix();
-
-}
+//void curtain() {
+//	glPushMatrix();
+//	glColor3f(0.58, 0.15, 0.16);
+//	
+//	glTranslatef(-50, 0, 115);
+//	for (GLfloat i = 0; i < 5; i++) {
+//		glTranslatef(20, 0, 0);
+//		glBegin(GL_TRIANGLE_FAN);
+//		glVertex3f(0, 0, 0);
+//		for (GLfloat j = 0; j < 3.14; j += 0.5) {
+//			glVertex3f(10 * cos(j), -10 * sin(j), 0);
+//
+//		}
+//		glEnd();
+//	}
+//
+//	glPopMatrix();
+//
+//}
 
 void lightBulb() {
 	glPushMatrix();
@@ -105,6 +105,7 @@ void lightBulb() {
 	gluCylinder(qobj, 0.2, 0.2, 0.2, 10, 1);
 	glPopMatrix();	
 }
+
 void roof() {
 	glPushMatrix();
 	glTranslatef(0, 5, 0);
@@ -138,11 +139,30 @@ void roof() {
 	glRotatef(-90, 1, 0, 0);
 	gluCylinder(qobj, 15.2, 15.2, 1, 8, 1);
 	glPopMatrix();
-	//
+	
 	glPushMatrix();
-	curtain();
+	
+	for (GLfloat i = 0; i < 8; i ++) {
+		glRotatef(-45, 0, 1, 0);
+		glScalef(1, 0.5, 1);
+		glRotatef(-22.5, 0, 1, 0);
+		glTranslatef(0, -8, 14);
+		glRotatef(180, 0, 0, 1);
+		glBegin(GL_TRIANGLE_FAN);
+		
+		glVertex3f(0.0, 0.0, 0.0);
+		for (GLfloat j = 0; j < 3.14; j += 0.1) {
+			glVertex3f(3.8 * cos(j), 3.8 * sin(j), 0);
+		}
+		glEnd();
+		
+		glRotatef(-180, 0, 0, 1);
+		glTranslatef(0, 8, -14);
+		glRotatef(22.5, 0, 1, 0);
+		glScalef(1, 2, 1);
+	}
+	
 	glPopMatrix();
-
 
 	glPopMatrix();
 }
@@ -166,6 +186,7 @@ void centerPole() {
 	glPopMatrix();
 	glEnable(GL_COLOR_MATERIAL);
 }
+
 void platformLayer() {
 	GLfloat segment = (2 * 3.14) / 8;
 	glPushMatrix();
@@ -340,7 +361,7 @@ void horse() {
 	gluCylinder(qobj, 0.5, 3, 12, 8, 1);
 	glPopMatrix();
 
-	//drop rod
+	
 	
 }
 
@@ -437,7 +458,7 @@ void moon() {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//gluLookAt(45,5,0, 0,0, 0, 0, 1, 0);
-	gluLookAt(0,-10,100, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0,-10,150, 0, 0, 0, 0, 1, 0);
 	//gluLookAt(-30, 5, 0, 0, 0, 0, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
