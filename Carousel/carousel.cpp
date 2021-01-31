@@ -17,8 +17,6 @@ GLfloat bulbChange = 0.8;
 GLfloat bulbR = 0.0;
 GLfloat bulbG = 0.0;
 GLfloat bulbB = 0.0;
-GLfloat greenComponent = 0.5;
-GLfloat blueComponent = 0.5;
 
 GLfloat camZ = 100;
 GLfloat camX = 0;
@@ -27,7 +25,7 @@ void initLighting() {
 	GLfloat L0_Ambient[] = { 0.1,0.1,0.1,1.0 };
 	GLfloat L0_Diffuse[] = { 1.0,1.0,1.0,1.0 };
 	GLfloat L0_Specular[] = { 0.7,0.7,0.7,1.0 };
-	GLfloat L0_position[] = { -20,20,20,1.0 };
+	GLfloat L0_position[] = { -20,20,100,1.0 };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, L0_Ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, L0_Diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, L0_Specular);
@@ -55,7 +53,7 @@ void init() {
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	initLighting();
 	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT1);
 	glEnable(GL_NORMALIZE);
 	qobj = gluNewQuadric();
 	gluQuadricDrawStyle(qobj, GLU_FILL);
@@ -182,7 +180,7 @@ void centerPole() {
 	glMaterialf(GL_FRONT, GL_SHININESS, 3.14);
 
 	glRotatef(90, 1, 0, 0);
-	gluCylinder(qobj, 1.75, 1, 18, 4, 1);
+	gluCylinder(qobj, 4, 2, 18, 8, 1);
 	glPopMatrix();
 	glEnable(GL_COLOR_MATERIAL);
 }
@@ -227,8 +225,9 @@ void platform() {
 }
 
 void horse() {
+	
 	//body
-	glRotatef(30, 0, 0, 1);
+	glRotatef(10, 0, 0, 1);
 	glPushMatrix();
 	glRotatef(-10, 0, 0, 1);
 	glRotatef(-90, 0, 1, 0);
@@ -422,6 +421,37 @@ void fence(){
 		glTranslatef(0, 0, -95);
 	}
 	glPopMatrix();
+
+	//door
+	
+	glPushMatrix();
+	
+	glScalef(2.5, 2, 1);
+	glRotatef(0.8, 0, 1, 0);
+	glTranslatef(0, -25, 97);
+	glRotatef(-90, 1, 0, 0);
+	glTranslatef(-7.5, 0, 0);
+	gluCylinder(qobj, 0.75, 0.75, 15, 40, 1);
+	glTranslatef(15, 0, 0);
+	gluCylinder(qobj, 0.75, 0.75, 15, 40, 1);
+	glTranslatef(-7.5, 0, 0);
+	glRotatef(90, 1, 0, 0);
+
+	glTranslatef(0, 15, 0);
+	glRotatef(-90, 0, 1, 0);
+	for (GLfloat i = 0; i < 180; i+=1) {
+		glRotatef(-i, 1, 0, 0);
+		glTranslatef(0, 0, 7.5);
+		glRotatef(-90, 1, 0, 0);
+		
+		gluCylinder(qobj, 0.75, 0.75, 1, 40,1);
+		glRotatef(90, 1, 0, 0);
+		glTranslatef(0, 0, -7.5);
+		glRotatef(i, 1, 0, 0);
+		
+	}
+
+	glPopMatrix();
 }
 
 
@@ -458,7 +488,7 @@ void moon() {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//gluLookAt(45,5,0, 0,0, 0, 0, 1, 0);
-	gluLookAt(0,-10,150, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0,40,150, 0, 0, 0, 0, 1, 0);
 	//gluLookAt(-30, 5, 0, 0, 0, 0, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -519,7 +549,7 @@ void display() {
 	//horse2
 	glPushMatrix();
 	glTranslatef(0, -hop, 0);
-	glColor3f(0.06, 0.58, 0.10);
+	glColor3f(0.8, 0.0, 0.8);
 	glRotatef(-60, 0, 1, 0);
 	glTranslatef(0.0, -30.0, 60);
 	glRotatef(-pitch, 0, 0, 1);
@@ -539,7 +569,7 @@ void display() {
 	//horse4
 	glPushMatrix();
 	glTranslatef(0, -hop, 0);
-	glColor3f(0.06, 0.58, 0.10);
+	glColor3f(0.8, 0.0, 0.8);
 	glRotatef(-180, 0, 1, 0);
 	glTranslatef(0.0, -30.0, 60);
 	glRotatef(-pitch, 0, 0, 1);
@@ -559,7 +589,7 @@ void display() {
 	//horse6
 	glPushMatrix();
 	glTranslatef(0, -hop, 0);
-	glColor3f(0.06, 0.58, 0.10);
+	glColor3f(0.8, 0.0, 0.8);
 	glRotatef(-300, 0, 1, 0);
 	glTranslatef(0.0, -30.0, 60);
 	glRotatef(-pitch, 0, 0, 1);
@@ -674,12 +704,12 @@ void timer(int value) {
 	}
 	
 	bulbR += bulbChange;
-	bulbG += bulbChange;
-
-	if (bulbR<0) {
+	//bulbG += bulbChange;
+	bulbB += bulbChange;
+	if (bulbR<0 || bulbG < 0 || bulbB < 0) {
 		bulbChange = -bulbChange;	
 	}
-	else if (bulbR >1) {
+	else if (bulbR >1 || bulbG > 1 || bulbB > 1) {
 		bulbChange = -bulbChange;
 	}
 
