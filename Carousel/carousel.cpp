@@ -50,7 +50,7 @@ void init() {
 	glShadeModel(GL_SMOOTH);
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	initLighting();
 	glEnable(GL_LIGHT0);
 	//glEnable(GL_LIGHT1);
@@ -75,32 +75,23 @@ void roofSegment() {
 	glPopMatrix();
 }
 
-//void curtain() {
-//	glPushMatrix();
-//	glColor3f(0.58, 0.15, 0.16);
-//	
-//	glTranslatef(-50, 0, 115);
-//	for (GLfloat i = 0; i < 5; i++) {
-//		glTranslatef(20, 0, 0);
-//		glBegin(GL_TRIANGLE_FAN);
-//		glVertex3f(0, 0, 0);
-//		for (GLfloat j = 0; j < 3.14; j += 0.5) {
-//			glVertex3f(10 * cos(j), -10 * sin(j), 0);
-//
-//		}
-//		glEnd();
-//	}
-//
-//	glPopMatrix();
-//
-//}
-
 void lightBulb() {
 	glPushMatrix();
+	glDisable(GL_COLOR_MATERIAL);
+	GLfloat Ambient[] = { bulbR, bulbG, bulbB,1.0 };
+	GLfloat Diffuse[] = { bulbR, bulbG, bulbB,1.0 };
+	GLfloat Specular[] = { bulbR, bulbG, bulbB,1.0 };
+	GLfloat Emmision[] = { bulbR/10, bulbG/10, bulbB/10,1.0 };
+	glMaterialfv(GL_FRONT, GL_AMBIENT, Ambient);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, Diffuse);
+	//glMaterialfv(GL_FRONT, GL_SPECULAR, Specular);
+	glMaterialfv(GL_FRONT, GL_EMISSION, Emmision);
+
 	glutSolidSphere(0.3, 50, 50);
 	glTranslatef(0.0,-0.55, 0.0);
 	glRotatef(-90, 1, 0, 0);
 	gluCylinder(qobj, 0.2, 0.2, 0.2, 10, 1);
+	glEnable(GL_COLOR_MATERIAL);
 	glPopMatrix();	
 }
 
@@ -139,8 +130,8 @@ void roof() {
 	glPopMatrix();
 	
 	glPushMatrix();
-	
-	for (GLfloat i = 0; i < 8; i ++) {
+	glColor3f(0.58, 0.15, 0.16);
+	for (GLfloat i = 0; i < 8; i ++) {			//curtains
 		glRotatef(-45, 0, 1, 0);
 		glScalef(1, 0.5, 1);
 		glRotatef(-22.5, 0, 1, 0);
@@ -150,7 +141,7 @@ void roof() {
 		
 		glVertex3f(0.0, 0.0, 0.0);
 		for (GLfloat j = 0; j < 3.14; j += 0.1) {
-			glVertex3f(3.8 * cos(j), 3.8 * sin(j), 0);
+			glVertex3f(5.8 * cos(j), 5.8 * sin(j), 0);
 		}
 		glEnd();
 		
@@ -159,7 +150,6 @@ void roof() {
 		glRotatef(22.5, 0, 1, 0);
 		glScalef(1, 2, 1);
 	}
-	
 	glPopMatrix();
 
 	glPopMatrix();
@@ -169,11 +159,9 @@ void centerPole() {
 	glPushMatrix();
 	glNormal3f(0, 0, 1);
 	glDisable(GL_COLOR_MATERIAL);
-
 	GLfloat Ambient[] = { 0.5,0.0,0.0,1.0 };
 	GLfloat Diffuse[] = { 0.58, 0.15, 0.16,1.0 };
 	GLfloat Specular[] = { 0.58, 0.15, 0.16,1.0 };
-
 	glMaterialfv(GL_FRONT, GL_AMBIENT, Ambient);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, Diffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, Specular);
@@ -183,12 +171,20 @@ void centerPole() {
 	gluCylinder(qobj, 4, 2, 18, 8, 1);
 	glPopMatrix();
 	glEnable(GL_COLOR_MATERIAL);
+
+	glPushMatrix();
+	glTranslatef(0, -8, 0);
+	glutSolidSphere(2.9, 40, 20);
+	glTranslatef(0, -4, 0);
+	glutSolidSphere(2.5, 40, 20);
+	glPopMatrix();
+	
 }
 
-void platformLayer() {
-	GLfloat segment = (2 * 3.14) / 8;
+void platformLayer(GLfloat sides) {
+	GLfloat segment = (2 * 3.14) / sides;
+
 	glPushMatrix();
-	
 	glNormal3f(0, 1, 0);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0.0, 0.0, 0.0);
@@ -197,21 +193,19 @@ void platformLayer() {
 	}
 	glEnd();
 	glRotatef(90, 1, 0, 0);
-	gluCylinder(qobj, 15, 15, 1, 8, 1);
-	glPopMatrix();
-
-	
+	gluCylinder(qobj, 15, 15, 1, sides, 1);
+	glPopMatrix();	
 }
 
 void platform() {
 	glPushMatrix();
 	glColor3f(0.78, 0.69, 0.53);
 	glTranslatef(0.0, -11.0, 0.0);
-	platformLayer();
+	platformLayer(8);
 	glColor3f(0.58, 0.15, 0.16);
 	glScalef(0.5, 0.5, 0.5);
 	glTranslatef(0.0, 2, 0.0);
-	platformLayer();
+	platformLayer(8);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -219,13 +213,12 @@ void platform() {
 	//glColor3f(0.78, 0.69, 0.53);
 	glTranslatef(0.0, -50.0, 0.0);
 	glScalef(5, 5, 5);
-	platformLayer();
+	platformLayer(32);
 	glPopMatrix();
 
 }
 
-void horse() {
-	
+void horse() {	
 	//body
 	glRotatef(10, 0, 0, 1);
 	glPushMatrix();
@@ -255,7 +248,6 @@ void horse() {
 
 	//left back limb
 	glPushMatrix();
-	
 	glTranslatef(1.75, -1.0, 2.0);
 	glRotatef(0, 0, 0, 1);
 	glRotatef(-90, 0, 1, 0);
@@ -402,12 +394,15 @@ void fence(){
 		glRotatef(5.625, 0, 1, 0);
 		glTranslatef(0, 0, 95);
 		glRotatef(-90, 1, 0, 0);
-		gluCylinder(qobj, 0.5, 0.5, 15, 40, 1);
-		
+		gluCylinder(qobj, 0.5, 0.5, 17, 40, 1);
+		glTranslatef(0, 0, 18);
+		glutSolidSphere(1, 40, 40);
+		glTranslatef(0, 0, -18);
 		glRotatef(90, 1, 0, 0);
 		glTranslatef(0, 0, -95);
 	}
 	glPopMatrix();
+
 	glPushMatrix();
 	glColor3f(0.5, 0.5, 0.5);
 	glRotatef(-6, 0, 1, 0);
@@ -423,9 +418,7 @@ void fence(){
 	glPopMatrix();
 
 	//door
-	
 	glPushMatrix();
-	
 	glScalef(2.5, 2, 1);
 	glRotatef(0.8, 0, 1, 0);
 	glTranslatef(0, -25, 97);
@@ -436,25 +429,19 @@ void fence(){
 	gluCylinder(qobj, 0.75, 0.75, 15, 40, 1);
 	glTranslatef(-7.5, 0, 0);
 	glRotatef(90, 1, 0, 0);
-
 	glTranslatef(0, 15, 0);
 	glRotatef(-90, 0, 1, 0);
 	for (GLfloat i = 0; i < 180; i+=1) {
 		glRotatef(-i, 1, 0, 0);
 		glTranslatef(0, 0, 7.5);
 		glRotatef(-90, 1, 0, 0);
-		
 		gluCylinder(qobj, 0.75, 0.75, 1, 40,1);
 		glRotatef(90, 1, 0, 0);
 		glTranslatef(0, 0, -7.5);
-		glRotatef(i, 1, 0, 0);
-		
+		glRotatef(i, 1, 0, 0);	
 	}
-
 	glPopMatrix();
 }
-
-
 
 void moon() {
 	glPushMatrix();
@@ -492,13 +479,13 @@ void display() {
 	//gluLookAt(-30, 5, 0, 0, 0, 0, 0, 1, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 	//moon();
 	
 	glColor3f(0.0, 0.63, 0.90);
 	glScalef(0.75, 0.75, 0.75);
 
 	// horse rotation comes here
-
 	glRotatef(rot, 0, 1, 0);
 	
 	glPushMatrix();
@@ -535,7 +522,6 @@ void display() {
 	glTranslatef(-5.0, 30.0, 60);
 	dropRod();
 	glPopMatrix();
-
 
 	//horse1
 	glPushMatrix();
@@ -596,15 +582,13 @@ void display() {
 	horse();
 	glPopMatrix();
 	
-
 	glPushMatrix();
 	glScalef(5, 5, 5);
 	glTranslatef(0.0, 4, 0.0);
 
 	glPushMatrix();
 	glTranslatef(0.0f, 6, 0.0);
-	glColor3f(bulbR, bulbG, bulbB);
-	
+	//glColor3f(bulbR, bulbG, bulbB);
 	lightBulb();
 	for (GLfloat i = 0; i < 361; i+=45) {
 		
@@ -613,25 +597,17 @@ void display() {
 		for (GLfloat j = 0;j < 6; j++) {
 			glTranslatef(j, -j / 4, 0);
 			if(j>1){
-				
 				lightBulb();
 			}
-			
 		}
-		
-		
 		glPopMatrix();
 	}
 	glPopMatrix();
 
-
 	glPushMatrix();
 	glTranslatef(0.0f, 4, 0.0);
-	glColor3f(bulbR, bulbG, bulbB);
-
-
+	//glColor3f(bulbR, bulbG, bulbB);
 	for (GLfloat i = 0; i < 361; i += 45) {
-
 		glRotatef(i, 0, 1, 0);
 		glPushMatrix();
 		for (GLfloat j = 0; j < 6; j++) {
@@ -641,15 +617,14 @@ void display() {
 				lightBulb();
 				glRotatef(-180, 1, 0, 0);
 			}
-
 		}
-
-
 		glPopMatrix();
 	}
 	glPopMatrix();
 
+	glPushMatrix();
 	roof();
+	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0, 3, 0);
@@ -657,6 +632,7 @@ void display() {
 	glPopMatrix();
 
 	glPopMatrix();
+
 	glPushMatrix();
 	glScalef(5, 5, 5);
 	platform();
@@ -666,8 +642,6 @@ void display() {
 	glLoadIdentity();
 	fence();
 	glPopMatrix();
-
-	
 
 	glFlush();
 }
@@ -680,22 +654,22 @@ void reshape(GLsizei width, GLsizei height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	GLfloat aspectRatio = (GLfloat)width / (GLfloat)height;
-	gluPerspective(100, aspectRatio, 10, 250);
-	
+	gluPerspective(100, aspectRatio, 10, 250);	
 }
 
-void timer(int value) {
-	
+void timer(int value) {	
 	rot += -5;
 	//pitch+=20;
 	hop=hop+ hopChange;
 	//pitch = pitch + pitchChange;
+
 	if (hop >= 6) {
 		hopChange = -hopChange;
 	}
 	else if (hop <= 5) {
 		hopChange = -hopChange;
 	}
+
 	if (pitch >= 5) {
 		pitchChange = -pitchChange;
 	}
@@ -704,15 +678,14 @@ void timer(int value) {
 	}
 	
 	bulbR += bulbChange;
-	//bulbG += bulbChange;
-	bulbB += bulbChange;
+	bulbG += bulbChange;
+	//bulbB += bulbChange;
 	if (bulbR<0 || bulbG < 0 || bulbB < 0) {
 		bulbChange = -bulbChange;	
 	}
 	else if (bulbR >1 || bulbG > 1 || bulbB > 1) {
 		bulbChange = -bulbChange;
 	}
-
 
 	glutTimerFunc(130, timer, 1);
 	glutPostRedisplay();
@@ -721,6 +694,7 @@ void timer(int value) {
 void keyBoardSpecial() {
 	
 }
+
 int main(int argc, char** args) {
 	glutInit(&argc, args);
 	glutInitWindowSize(500, 500);
