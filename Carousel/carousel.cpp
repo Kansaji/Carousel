@@ -21,7 +21,7 @@ GLfloat bulbB = 0.1;
 GLfloat lightingMode = 2;
 
 GLfloat camX = -60.0;
-GLfloat camY = 40.0;
+GLfloat camY = 0.0;
 GLfloat camZ = 150.0;
 
 GLfloat sway = 0;
@@ -564,116 +564,69 @@ void moon() {
 	glEnable(GL_COLOR_MATERIAL);
 }
 
-void pineTree(GLfloat red, GLfloat green, GLfloat blue, GLboolean isSwaing, GLfloat swayOffset) {
-	//trunk
-	glPushMatrix();
-	glColor3f(0.54, 0.22, 0.21);
-	glRotatef(-90, 1, 0, 0);
-	gluCylinder(qobj, 1.75, 0.5, 25, 5, 1);
-	//crown
-	glTranslatef(0, 0, 3);
-	for (GLfloat i = 0; i < 8; i++) {
-		glColor3f(red, green+(i*0.1), blue);
-		glTranslatef(0, 0, 5);
-		if (isSwaing) {
-
-			glRotatef(sway*swayOffset, 0, 1, 0);
-			glRotatef(sway*swayOffset, 0, 0, 1);
+void drawTreeSegment(GLfloat depth, GLfloat red, GLfloat green, GLfloat blue, GLboolean isSwaying, GLfloat swayOffset) {
+	if (depth < 0) {
+		glColor3f(red, green, blue);
+		glPushMatrix();
+		if (isSwaying) {
+			glTranslatef(sway * swayOffset, 0, 0);
 		}
-		glRotatef(i*10, 0, 0, 1);
-		gluCylinder(qobj, 12-(i*2.0), 0, 10, 8, 1);
-	}
-	glPopMatrix();
-
-}
-
-void Tree(GLfloat red, GLfloat green, GLfloat blue) {
-	glPushMatrix();
-	glColor3f(0.47, 0.19, 0.0);
-	glRotatef(-90, 1, 0, 0);
-	//trunk
-	gluCylinder(qobj, 1.5, 0.75, 25, 5, 5);
-	//1st crown
-	glTranslatef(0, 0, 12);
-	glPushMatrix();
-	for (GLfloat i = 0; i < 5; i++) {
-		//leaves
-		glColor3f(red, green+(i/10), blue);
-		glRotatef(65,0,0,1);
-		glRotatef(-45, 1, 0, 0);
-		glPushMatrix();
-		glTranslatef(0, 0, 5+(i*2.5));
+		
 		glScalef(5, 5, 5);
-		glutSolidIcosahedron();
-
-		//fruits
-		glTranslatef(0, 0, 1);
-		glColor3f(0.78, 0.02, 0.10);
-		glutSolidSphere(0.1, 5, 5);
-		glTranslatef(0.5, 0, -0.9);
-		glutSolidSphere(0.1, 5, 5);
+		glutSolidTetrahedron();
+		glTranslatef(0,0,-2);
+		glutSolidTetrahedron();
 		glPopMatrix();
-		//branch
-		glColor3f(0.47, 0.19, 0.0);
-		gluCylinder(qobj, 0.6, 0.7, 8, 6, 1);
-		glRotatef(45, 1, 0, 0);
-	
+		return;
 	}
-	glPopMatrix();
-	//2nd crown
+	glColor3f(0.11, 0.11, 0.11);
 	glPushMatrix();
-	glRotatef(45, 0, 0, 1);
-	glTranslatef(0, 0, 10);
-	for (GLfloat i = 0; i < 3; i++) {
-		//leaves
-		glColor3f(red+0.2+(i/10), green+0.3, blue);
-		glRotatef(120, 0, 0, 1);
-		glRotatef(-45, 1, 0, 0);
-		glPushMatrix();
-		glTranslatef(0, 0, 8);
-		glScalef(4, 4, 4);
-		glutSolidIcosahedron();
-		//fruits
-		glTranslatef(0, 0, 1);
-		glColor3f(0.78, 0.02, 0.10);
-		glutSolidSphere(0.1, 5, 5);
-		glTranslatef(0.5, 0, -0.9);
-		glutSolidSphere(0.1, 5, 5);
-		glPopMatrix();
-		//branch
-		glColor3f(0.47, 0.19, 0.0);
-		gluCylinder(qobj, 0.75, 0.75, 10, 6, 1);
-		glRotatef(45, 1, 0, 0);
+	glScalef(0.7, 0.7, 0.7);
+	gluCylinder(qobj, 0.75, 0.5, 15, 8, 8);
+	glutSolidSphere(1, 5, 5);
 
-	}
-	glPopMatrix();
+	glTranslatef(0, 0, 15);
 
-	//3rd crown
 	glPushMatrix();
-	glRotatef(60, 0, 0, 1);
-	glTranslatef(0, 0, 12);
-	for (GLfloat i = 0; i < 3; i++) {
-		//leaves
-		glColor3f(red + 0.4 + (i / 10), green + 0.3, blue);
-		glRotatef(120, 0, 0, 1);
-		glRotatef(-15, 1, 0, 0);
-		glPushMatrix();
-		glTranslatef(0, 0, 8);
-		glScalef(3, 3, 3);
-		glutSolidIcosahedron();
-		glPopMatrix();
-		//branch
-		glColor3f(0.47, 0.19, 0.0);
-		gluCylinder(qobj, 0.4, 0.4, 10.5, 6, 1);
-		glRotatef(-15, 1, 0, 0);
-
-	}
-	glPopMatrix();
+	glRotatef(-45, 1, 0, 0);
+	drawTreeSegment(depth - 1 ,red, green, blue, isSwaying, swayOffset);
 	glPopMatrix();
 
+	glPushMatrix();
+	glRotatef(-45, -1, -1, 1);
+	drawTreeSegment(depth - 1, red, green, blue, isSwaying, swayOffset);
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(45, 1, -1, 1);
+	drawTreeSegment(depth - 1, red, green, blue, isSwaying, swayOffset);
+	glPopMatrix();
+
+	glPopMatrix();
 }
+void drawTree(GLfloat depth, GLfloat red, GLfloat green, GLfloat blue, GLboolean isSwaying, GLfloat swayOffset, GLfloat crowns, GLfloat crownRot) {
+	glPushMatrix();
+	GLfloat r=0, g=0, b=0;
+	glRotatef(-90, 1, 0, 0);
+	for (GLfloat i = 0; i < crowns; i++) {
+		r = red ;
+		g = green ;
+		b = blue ;
 
-
+		if (r>1) {
+			r = 1;
+		}
+		if (g > 1) {
+			g = 1;
+		}
+		if (b > 1) {
+			b = 1;
+		}
+		glRotatef(crownRot, 0, 0, 1);
+		drawTreeSegment(depth,r,g,b,isSwaying, swayOffset);
+	}
+	glPopMatrix();
+ }
 
 void ground() {
 	
@@ -885,28 +838,22 @@ void display() {
 	glTranslatef(0, -20, 0);
 	
 	glTranslatef(-50, 0, 0);
-	Tree(0, 0.1, 0); 
-	
-	glTranslatef(0, 0, 10);
-	Tree(0.4, 0.5, 0);
-	
-	glTranslatef(20, 0, -55);
-	pineTree(0.5, 0.5, 0.0, true,1);
-	
-	glTranslatef(40, 0, 0.0);
-	pineTree(0.5, 0.2, 0.0, true, 1);
-	
-	glTranslatef(35, 0, 50.0);
-	pineTree(0.7, 0.1, 0.0,true,-1);
-	
-	glTranslatef(20, 0, 0);
-	pineTree(0.7, 0.1, 0.0, true, 1);
+	drawTree(5, 0.0, 0.50, 0.25, true, 1, 1, 0);
 
-	glTranslatef(-30, 0, 25.0);
-	pineTree(0.7, 0.3, 0.0, true, 0.75);
-	
+	glTranslatef(0, 0, 20);
+	drawTree(6, 0.95, 0.04, 0.04, true, 1, 1, 0);
+
+	glTranslatef(115, 0, -25);
+	drawTree(5, 1.0, 0.42, 0.71, true, 1, 1, 0);
+
+	glTranslatef(-50, 0, 40.0);
+	glRotatef(-45, 0, 1, 0);
+	drawTree(6, 0.88, 0.94, 0.05, true, 1, 1, 0);
+
 	glPopMatrix();
 	glFlush();
+
+
 }
 
 void reshape(GLsizei width, GLsizei height) {
