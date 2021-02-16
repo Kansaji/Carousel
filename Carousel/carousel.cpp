@@ -20,8 +20,8 @@ GLfloat bulbG = 0.1;
 GLfloat bulbB = 0.1;
 GLfloat lightingMode = 2;
 
-GLfloat camX = -60.0;
-GLfloat camY = 0.0;
+GLfloat camX = 0.0;
+GLfloat camY = -50.0;
 GLfloat camZ = 150.0;
 
 GLfloat sway = 0;
@@ -106,7 +106,7 @@ static unsigned int texture[4];
 
 void loadExternalTextures() {
 	BitMapFile* image[4];
-	image[0] = getbmp("C:/Users/ABC/Downloads/tex1.bmp");
+	image[0] = getbmp("C:/Users/ABC/Downloads/tex1_(1).bmp");
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[0]->sizeX, image[0]->sizeY, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, image[0]->data);
@@ -150,7 +150,7 @@ void init() {
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	initLighting();
 	glEnable(GL_LIGHT0);
-	//glEnable(GL_LIGHT1);
+
 	glEnable(GL_NORMALIZE);
 	qobj = gluNewQuadric();
 	gluQuadricDrawStyle(qobj, GLU_FILL);
@@ -633,10 +633,8 @@ void ground() {
 	//ground
 	
 	glEnable(GL_TEXTURE_2D);
-	//ground
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glBegin(GL_POLYGON);
-
 	glTexCoord2f(0.0, 0.0); glVertex3f(-15, 0.0, 15);
 	glTexCoord2f(1.0, 0.0); glVertex3f(15, 0.0, 15);
 	glTexCoord2f(1.0, 1.0); glVertex3f(15, 0.0, -15);
@@ -828,26 +826,42 @@ void display() {
 	glTranslatef(0, -12.1, 0);
 	fence();
 	glPopMatrix();
+
+	glPushMatrix();
 	//glScalef(4, 1, 4);
-	//glTranslatef(0.0,-20, 0);
-	//ground();
+	glTranslatef(190,-68, -120);
+	for (int i = 0; i < 25; i++) {
+		
+		for (int j = 0; j < 40; j++) {
+			glTranslatef(-10, 0, 0);
+			ground();
+		}
+		glTranslatef(400, 0, 0);
+		glTranslatef(0, 0, 10);
+	}
+		
+	glPopMatrix();
 
 	glPushMatrix();
 	
 	glScalef(3, 3, 3);
-	glTranslatef(0, -20, 0);
+	glTranslatef(0, -22.5, 0);
 	
 	glTranslatef(-50, 0, 0);
+	//green 
 	drawTree(5, 0.0, 0.50, 0.25, true, 1, 1, 0);
 
 	glTranslatef(0, 0, 20);
+	//orange
 	drawTree(6, 0.95, 0.04, 0.04, true, 1, 1, 0);
 
-	glTranslatef(115, 0, -25);
+	glTranslatef(95, 0, -25);
+	//magenta
 	drawTree(5, 1.0, 0.42, 0.71, true, 1, 1, 0);
 
-	glTranslatef(-50, 0, 40.0);
+	glTranslatef(-30, 0, 40.0);
 	glRotatef(-45, 0, 1, 0);
+	//yellow
 	drawTree(6, 0.88, 0.94, 0.05, true, 1, 1, 0);
 
 	glPopMatrix();
