@@ -20,8 +20,8 @@ GLfloat bulbG = 0.1;
 GLfloat bulbB = 0.1;
 GLfloat lightingMode = 2;
 
-GLfloat camX = 0.0;
-GLfloat camY = -50.0;
+GLfloat camX = -20.0;
+GLfloat camY = 10.0;
 GLfloat camZ = 150.0;
 
 GLfloat sway = 0;
@@ -107,9 +107,34 @@ static unsigned int texture[4];
 void loadExternalTextures() {
 	BitMapFile* image[4];
 	image[0] = getbmp("C:/Users/ABC/Downloads/tex1_(1).bmp");
+	image[1] = getbmp("C:/Users/ABC/Downloads/woodTex.bmp");
+	image[2] = getbmp("C:/Users/ABC/Downloads/nameboard.bmp");
+
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[0]->sizeX, image[0]->sizeY, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, image[0]->data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[1]->sizeX, image[1]->sizeY, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, image[1]->data);
+
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	glBindTexture(GL_TEXTURE_2D, texture[2]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[2]->sizeX, image[2]->sizeY, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, image[2]->data);
+
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -122,7 +147,7 @@ void initLighting() {
 	GLfloat L0_Ambient[] = { 0.1,0.1,0.1,1.0 };
 	GLfloat L0_Diffuse[] = { 1.0,1.0,1.0,1.0 };
 	GLfloat L0_Specular[] = { 0.7,0.7,0.7,1.0 };
-	GLfloat L0_position[] = { -20,20,100,1.0 };
+	GLfloat L0_position[] = { 0.0,20,0.0,1.0 };
 	glLightfv(GL_LIGHT0, GL_AMBIENT, L0_Ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, L0_Diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, L0_Specular);
@@ -158,7 +183,7 @@ void init() {
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 
-	glGenTextures(2, texture);
+	glGenTextures(3, texture);
 	loadExternalTextures();
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -644,6 +669,96 @@ void ground() {
 
 }
 
+void benchSegment() {
+	glPushMatrix();
+	glColor3f(185.0 / 255.0, 122.0 / 255.0, 87.0 / 255.0);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(1.0, 0.0); glVertex3f(23, -1.0, 0);
+	glTexCoord2f(1.0, 1.0); glVertex3f(23, 1.0, 0);
+	glTexCoord2f(0.0, 1.0); glVertex3f(-23, 1.0, 0);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-23, -1.0, 0);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glColor3f(0, 0, 0);
+
+	glTranslatef(-14.5, -1.5, -0.5);
+	glRotatef(-90, 1, 0, 0);
+	gluCylinder(qobj, 0.5, 0.5, 3.5, 8, 2);
+	glTranslatef(27, 0, 0);
+	gluCylinder(qobj, 0.5, 0.5, 3.5, 8, 2);
+	glPopMatrix();
+
+
+
+}
+
+void bench() {
+	glPushMatrix();
+	glNormal3f(0.0, 0.0, 1.0);
+	glRotatef(-15, 1, 0, 0);
+	for (GLfloat i = 0; i < 4; i++) {
+		benchSegment();
+		glTranslatef(0.0, 2.5, 0.0);	
+	}
+	glPopMatrix();
+
+	glPushMatrix();
+	glNormal3f(0.0, 1.0, 0.0);
+	glTranslatef(0, -1.0, 7);
+	glRotatef(-88, 1, 0, 0);
+	for (GLfloat i = 0; i < 3; i++) {
+		benchSegment();
+		glTranslatef(0.0, 2.5, 0.0);
+	}
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-13.5, 0, 0);
+	glRotatef(90, 1, 0, 0);
+	glRotatef(10, 1, 0, 0);
+	gluCylinder(qobj, 0.75, 0.75, 12, 8, 2);
+	glTranslatef(0, 7.5, 0);
+	glRotatef(-20, 1, 0, 0);
+	gluCylinder(qobj, 0.75, 0.75, 12, 8, 2);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(13, 0, 0);
+	glRotatef(90, 1, 0, 0);
+	glRotatef(10, 1, 0, 0);
+	gluCylinder(qobj, 0.75, 0.75, 12, 8, 2);
+	glTranslatef(0, 7.5, 0);
+	glRotatef(-20, 1, 0, 0);
+	gluCylinder(qobj, 0.75, 0.75, 12, 8, 2);
+	glPopMatrix();
+}
+
+void nameBoard() {
+
+	//name board
+	glPushMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[2]);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-40, -20.0, 0);
+	glTexCoord2f(1.0, 0.0); glVertex3f(40, -20.0, 0);
+	glTexCoord2f(1.0, 1.0); glVertex3f(40, 20.0, 0);
+	glTexCoord2f(0.0, 1.0); glVertex3f(-40, 20.0, 0);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+	glTranslatef(0, 0, -3);
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(-30, 0, 0);
+	gluCylinder(qobj, 1.5, 1.5, 50, 8, 1);
+	glTranslatef(60, 0, 0);
+	gluCylinder(qobj, 1.5, 1.5, 50, 8, 1);
+	glPopMatrix();
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//gluLookAt(45,5,0, 0,0, 0, 0, 1, 0);
@@ -865,6 +980,29 @@ void display() {
 	drawTree(6, 0.88, 0.94, 0.05, true, 1, 1, 0);
 
 	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-120, -55, 75);
+	bench();
+	glTranslatef(-60, 0, 0);
+	bench();
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(-20, 0,1, 0);
+	glTranslatef(120, -55, 0);
+	glRotatef(90, 0, 1, 0);
+	bench();
+	glTranslatef(-50, 0, 0);
+	bench();
+	glPopMatrix();
+
+
+	glPushMatrix();
+	glTranslatef(-140, -20, 130);
+	nameBoard();
+	glPopMatrix();
+
 	glFlush();
 
 
