@@ -109,6 +109,8 @@ void loadExternalTextures() {
 	image[0] = getbmp("C:/Users/ABC/Downloads/tex1_(1).bmp");
 	image[1] = getbmp("C:/Users/ABC/Downloads/woodTex.bmp");
 	image[2] = getbmp("C:/Users/ABC/Downloads/nameboard.bmp");
+	image[3] = getbmp("C:/Users/ABC/Downloads/pavement.bmp");
+
 
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[0]->sizeX, image[0]->sizeY, 0,
@@ -133,6 +135,16 @@ void loadExternalTextures() {
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[2]->sizeX, image[2]->sizeY, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, image[2]->data);
+
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glBindTexture(GL_TEXTURE_2D, texture[3]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[3]->sizeX, image[3]->sizeY, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, image[3]->data);
 
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -750,7 +762,7 @@ void nameBoard() {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 
-	glTranslatef(0, 0, -3);
+	glTranslatef(0, 0, -2.3);
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(-30, 0, 0);
 	gluCylinder(qobj, 1.5, 1.5, 50, 8, 1);
@@ -758,6 +770,23 @@ void nameBoard() {
 	gluCylinder(qobj, 1.5, 1.5, 50, 8, 1);
 	glPopMatrix();
 }
+
+void pathWay() {
+
+	//pathway
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[3]);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-16, 0.0, 16);
+	glTexCoord2f(1.0, 0.0); glVertex3f(24, 0.0, 16);
+	glTexCoord2f(1.0, 1.0); glVertex3f(24, 0.0, -16);
+	glTexCoord2f(0.0, 1.0); glVertex3f(-16, 0.0, -16);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+
+}
+
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -945,13 +974,13 @@ void display() {
 	glPushMatrix();
 	//glScalef(4, 1, 4);
 	glTranslatef(190,-68, -120);
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < 30; i++) {
 		
-		for (int j = 0; j < 40; j++) {
+		for (int j = 0; j < 50; j++) {
 			glTranslatef(-10, 0, 0);
 			ground();
 		}
-		glTranslatef(400, 0, 0);
+		glTranslatef(500, 0, 0);
 		glTranslatef(0, 0, 10);
 	}
 		
@@ -974,7 +1003,7 @@ void display() {
 	//magenta
 	drawTree(5, 1.0, 0.42, 0.71, true, 1, 1, 0);
 
-	glTranslatef(-30, 0, 40.0);
+	glTranslatef(-20, 0, 50.0);
 	glRotatef(-45, 0, 1, 0);
 	//yellow
 	drawTree(6, 0.88, 0.94, 0.05, true, 1, 1, 0);
@@ -999,8 +1028,18 @@ void display() {
 
 
 	glPushMatrix();
-	glTranslatef(-140, -20, 130);
+	glTranslatef(-150, -20, 150);
+	glRotatef(15, 0, -1, 0);
 	nameBoard();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-0, -67.5, 110);
+	for (GLfloat i = 0; i < 12; i++) {
+		glTranslatef(0.0, 0.0, 5.0);
+		pathWay();
+	}
+	pathWay();
 	glPopMatrix();
 
 	glFlush();
