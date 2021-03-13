@@ -12,7 +12,7 @@ GLfloat rotChange = 0.0;
 GLfloat hop = 0;
 GLfloat hopChange =0 ;
 GLfloat pitch = 0;
-GLfloat pitchChange = 10;
+GLfloat pitchChange = 0;
 
 GLfloat bulbChange = 0;
 GLfloat bulbR = 0.1;
@@ -23,6 +23,11 @@ GLfloat lightingMode = 2;
 GLfloat camX = -20.0;
 GLfloat camY = 10.0;
 GLfloat camZ = 150.0;
+
+GLfloat distanceToOrigin = 184.0;
+GLfloat verticalCamPosition = 10.0;
+GLfloat cameraRotationAngle = 1.57;
+
 
 GLfloat sway = 0;
 GLfloat swayChange = 0.2;
@@ -102,15 +107,15 @@ BitMapFile* getbmp(string filename)
 	return bmpRGBA;
 }
 
-static unsigned int texture[4];
+static unsigned int texture[5];
 
 void loadExternalTextures() {
-	BitMapFile* image[4];
+	BitMapFile* image[5];
 	image[0] = getbmp("C:/Users/ABC/Downloads/tex1_(1).bmp");
 	image[1] = getbmp("C:/Users/ABC/Downloads/woodTex.bmp");
 	image[2] = getbmp("C:/Users/ABC/Downloads/nameboard.bmp");
 	image[3] = getbmp("C:/Users/ABC/Downloads/pavement.bmp");
-
+	
 
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[0]->sizeX, image[0]->sizeY, 0,
@@ -151,6 +156,8 @@ void loadExternalTextures() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	
 
 }
 
@@ -319,18 +326,20 @@ void centerPole() {
 
 void platformLayer(GLfloat sides , GLfloat radius) {
 	GLfloat segment = (2 * 3.14) / sides;
-
+	
 	glPushMatrix();
 	glNormal3f(0, 1, 0);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0.0, 0.0, 0.0);
 	for (float i = 0; i < 2 * 3.14; i += segment) {
-		glVertex3f(radius*cos(i),0.0,radius*sin(i));
+		glVertex3f(radius * cos(i), 0.0, radius * sin(i));
 	}
+	
 	glEnd();
 	glRotatef(90, 1, 0, 0);
 	gluCylinder(qobj, radius, radius, 1, sides, 1);
 	glPopMatrix();	
+
 }
 
 void platform() {
@@ -572,34 +581,7 @@ void fence(){
 	glPopMatrix();
 }
 
-void moon() {
-	glPushMatrix();
-	glDisable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHT2);
-	GLfloat L2_Ambient[] = { 0.1,0.1,0.1,1.0 };
-	GLfloat L2_Diffuse[] = { 1.0,1.0,1.0,1.0 };
-	GLfloat L2_Specular[] = { 0.7,0.7,0.7,1.0 };
-	GLfloat L2_position[] = { -40, 30, -15,1.0 };
-	glLightfv(GL_LIGHT2, GL_AMBIENT, L2_Ambient);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, L2_Diffuse);
-	glLightfv(GL_LIGHT2, GL_SPECULAR, L2_Specular);
-	glLightfv(GL_LIGHT2, GL_POSITION, L2_position);
 
-
-
-	GLfloat Ambient[] = { 1.0,1.0,1.0,1.0 };
-	GLfloat Diffuse[] = { 1.0, 1.0, 1.0,1.0 };
-	GLfloat Specular[] = { 1.0, 1.0, 1.0,1.0 };
-	GLfloat Emmisive = (1.0, 1.0, 1.0, 1.0);
-
-	glMaterialfv(GL_FRONT, GL_AMBIENT, Ambient);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, Diffuse);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, Specular);
-	glMaterialf(GL_FRONT_AND_BACK, GL_EMISSION, Emmisive);
-	glutSolidSphere(8, 40, 40);
-	glPopMatrix();
-	glEnable(GL_COLOR_MATERIAL);
-}
 
 void drawTreeSegment(GLfloat depth, GLfloat red, GLfloat green, GLfloat blue, GLboolean isSwaying, GLfloat swayOffset) {
 	if (depth < 0) {
@@ -775,6 +757,8 @@ void pathWay() {
 
 	//pathway
 
+	
+	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glBegin(GL_POLYGON);
@@ -784,30 +768,25 @@ void pathWay() {
 	glTexCoord2f(0.0, 1.0); glVertex3f(-16, 0.0, -16);
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
+	
 
 }
 
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//gluLookAt(45,5,0, 0,0, 0, 0, 1, 0);
 	
-	//gluLookAt(-30, 5, 0, 0, 0, 0, 0, 1, 0);
+	
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	//glPushMatrix();
 	
-	
+	gluLookAt(cos(cameraRotationAngle)*distanceToOrigin, verticalCamPosition,sin(cameraRotationAngle)*distanceToOrigin, 0, 0, 0, 0, 1, 0);
 	
 
 	
 	
-	//gluLookAt(distanceToOrigin*cos(cameraRotationAngle), 0, distanceToOrigin*sin(cameraRotationAngle), 0, 0, 0, 0, 1, 0);
-	gluLookAt(camX,camY,camZ, 0, 0, 0, 0, 1, 0);
-
-	//glPopMatrix();
-	//moon();
 	
 	
 	glScalef(0.75, 0.75, 0.75);
@@ -972,7 +951,6 @@ void display() {
 	glPopMatrix();
 
 	glPushMatrix();
-	//glScalef(4, 1, 4);
 	glTranslatef(190,-68, -120);
 	for (int i = 0; i < 30; i++) {
 		
@@ -1039,7 +1017,7 @@ void display() {
 		glTranslatef(0.0, 0.0, 5.0);
 		pathWay();
 	}
-	pathWay();
+	
 	glPopMatrix();
 
 	glFlush();
@@ -1060,9 +1038,8 @@ void reshape(GLsizei width, GLsizei height) {
 
 void timer(int value) {
 	rot += -rotChange;
-	//pitch+=20;
 	hop = hop + hopChange;
-	//pitch = pitch + pitchChange;
+	pitch = pitch + pitchChange;
 
 	if (hop >= 6) {
 		hopChange = -hopChange;
@@ -1115,35 +1092,37 @@ void timer(int value) {
 
 void keyBoardSpecial(int key, int x, int y) {
 	if (key == GLUT_KEY_LEFT) {
-		camX -= 1;
+		cameraRotationAngle += 0.05;
 	}
 	if (key == GLUT_KEY_RIGHT) {
-		camX += 1;
+		cameraRotationAngle -= 0.05;
 	}
 	if (key == GLUT_KEY_UP) {
-		camY+= 1;
+		verticalCamPosition+=1;
 	}
 	if (key == GLUT_KEY_DOWN) {
-		camY-=1;
+		verticalCamPosition -= 1;
 	}
 	glutPostRedisplay();
 }
 
 void keyBoard(unsigned char key,int x, int y) {
 	if (key == 'Z') {
-		camZ -= 1;
+		distanceToOrigin -= 1;
 	}
 	if (key == 'z') {
-		camZ += 1;
+		distanceToOrigin += 1;
 	}
 	if (key == 's') {
 		if (rotChange < 5) {
 			rotChange = 5;
 			hopChange = 1;
+			pitchChange = 10;
 		}
 		else if (rotChange > 0) {
 			rotChange = 0;
 			hopChange = 0;
+			pitchChange = 0;
 		}
 	}
 
